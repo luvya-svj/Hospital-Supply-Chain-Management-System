@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1520" width="100%" height="100%" style="background:#ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#000000" />
+    </marker>
+    <style>
+      .box { fill: #ffffff; stroke: #000000; stroke-width: 2; rx: 4; }
+      .start-end { fill: #ffffff; stroke: #000000; stroke-width: 2.5; rx: 24; }
+      .decision { fill: #ffffff; stroke: #000000; stroke-width: 2; }
+      .database { fill: #ffffff; stroke: #000000; stroke-width: 2; }
+      .lane { fill: none; stroke: #999999; stroke-width: 1; stroke-dasharray: 4 4; }
+      .line { fill: none; stroke: #000000; stroke-width: 1.8; marker-end: url(#arrow); }
+      .title-text { font-size: 20px; font-weight: bold; fill: #000000; text-anchor: middle; }
+      .subtitle-text { font-size: 13px; fill: #444444; text-anchor: middle; }
+      .header-text { font-size: 14px; font-weight: bold; fill: #000000; text-anchor: middle; text-transform: uppercase; letter-spacing: 0.5px; }
+      .node-title { font-size: 13px; font-weight: bold; fill: #000000; text-anchor: middle; }
+      .node-sub { font-size: 11px; fill: #222222; text-anchor: middle; }
+      .label-text { font-size: 11px; font-weight: bold; fill: #000000; background: #ffffff; }
+    </style>
+  </defs>
+
+  <!-- Title Header -->
+  <text x="550" y="45" class="title-text">HOSPITAL SUPPLY CHAIN MANAGEMENT SYSTEM (HSCMS)</text>
+  <text x="550" y="68" class="subtitle-text">System Architecture &amp; Role-Based Operational Workflow Flowchart</text>
+  <line x1="80" y1="85" x2="1020" y2="85" stroke="#000000" stroke-width="2" />
+
+  <!-- ==================== COLUMN / SWIMLANE HEADERS ==================== -->
+  <!-- Lane 1: Staff -->
+  <line x1="280" y1="95" x2="280" y2="1470" class="lane" />
+  <text x="175" y="115" class="header-text">1. Department Staff</text>
+
+  <!-- Lane 2: Inventory & Store -->
+  <line x1="560" y1="95" x2="560" y2="1470" class="lane" />
+  <text x="420" y="115" class="header-text">2. Inventory Manager</text>
+
+  <!-- Lane 3: Core DB & Engine -->
+  <line x1="820" y1="95" x2="820" y2="1470" class="lane" />
+  <text x="690" y="115" class="header-text">3. Procurement Officer</text>
+
+  <!-- Lane 4: Supplier -->
+  <text x="960" y="115" class="header-text">4. Supplier / Vendor</text>
+  <line x1="80" y1="130" x2="1020" y2="130" stroke="#000000" stroke-width="1" />
+
+  <!-- ==================== FLOW NODES ==================== -->
+
+  <!-- START -->
+  <rect x="95" y="150" width="160" height="42" class="start-end" />
+  <text x="175" y="176" class="node-title">START: User Login</text>
+
+  <!-- 1. Staff Submits Requisition -->
+  <line x1="175" y1="192" x2="175" y2="230" class="line" />
+  <rect x="85" y="230" width="180" height="60" class="box" />
+  <text x="175" y="254" class="node-title">Submit Requisition</text>
+  <text x="175" y="272" class="node-sub">Select Supply, Qty, Dept</text>
+
+  <!-- Arrow from Staff to Inventory Review -->
+  <path d="M 265 260 L 330 260" class="line" />
+
+  <!-- 2. Inventory Decision Diamond -->
+  <polygon points="420,220 500,260 420,300 340,260" class="decision" />
+  <text x="420" y="256" class="node-title">Review</text>
+  <text x="420" y="272" class="node-sub">Request?</text>
+
+  <!-- Reject Branch -->
+  <line x1="420" y1="220" x2="420" y2="170" stroke="#000000" stroke-width="1.8" />
+  <line x1="420" y1="170" x2="265" y2="170" class="line" />
+  <text x="360" y="162" class="label-text">Rejected</text>
+
+  <!-- Approve Branch -->
+  <line x1="420" y1="300" x2="420" y2="350" class="line" />
+  <text x="428" y="325" class="label-text">Approved</text>
+
+  <!-- Dispense & Deduct -->
+  <rect x="330" y="350" width="180" height="55" class="box" />
+  <text x="420" y="373" class="node-title">Approve &amp; Dispense</text>
+  <text x="420" y="391" class="node-sub">Deduct Store Stock</text>
+
+  <!-- ==================== CENTRAL DATABASE ==================== -->
+  <!-- Cylinder database symbol (Center-bottom) -->
+  <g transform="translate(330, 460)">
+    <path d="M 0 20 C 0 5, 180 5, 180 20 L 180 80 C 180 95, 0 95, 0 80 Z" class="database" />
+    <path d="M 0 20 C 0 35, 180 35, 180 20" fill="none" stroke="#000000" stroke-width="2" />
+    <text x="90" y="52" class="node-title">CENTRAL INVENTORY</text>
+    <text x="90" y="69" class="node-sub">PostgreSQL (medical_supply)</text>
+  </g>
+
+  <!-- Arrow Dispense to DB -->
+  <line x1="420" y1="405" x2="420" y2="460" class="line" />
+
+  <!-- ==================== AUTOMATED ALERT ENGINE ==================== -->
+  <line x1="420" y1="545" x2="420" y2="600" class="line" />
+  
+  <polygon points="420,600 500,645 420,690 340,645" class="decision" />
+  <text x="420" y="640" class="node-title">Stock / Expiry</text>
+  <text x="420" y="656" class="node-sub">Evaluation</text>
+
+  <!-- Branch: Expired Items -> Quarantine & Dispose -->
+  <line x1="340" y1="645" x2="175" y2="645" class="line" />
+  <text x="215" y="637" class="label-text">Expired</text>
+  
+  <rect x="85" y="618" width="180" height="55" class="box" />
+  <text x="175" y="641" class="node-title">Quarantine &amp; Dispose</text>
+  <text x="175" y="658" class="node-sub">Log Disposal Record</text>
+
+  <path d="M 175 673 L 175 730 L 370 730 L 370 545" class="line" />
+  <text x="215" y="722" class="node-sub">Update status to DISPOSED</text>
+
+  <!-- Branch: Low Stock -> Procurement PO -->
+  <line x1="500" y1="645" x2="690" y2="645" class="line" />
+  <text x="535" y="637" class="label-text">Qty &lt;= Min Threshold</text>
+
+  <!-- Procurement: Create PO -->
+  <rect x="600" y="618" width="180" height="55" class="box" />
+  <text x="690" y="641" class="node-title">Raise Purchase Order</text>
+  <text x="690" y="658" class="node-sub">Generate PO #ID to Vendor</text>
+
+  <!-- Arrow to Supplier -->
+  <line x1="780" y1="645" x2="870" y2="645" class="line" />
+
+  <!-- Supplier Lane: Acknowledge & Schedule -->
+  <rect x="870" y="618" width="180" height="55" class="box" />
+  <text x="960" y="641" class="node-title">Acknowledge PO</text>
+  <text x="960" y="658" class="node-sub">Schedule Dispatch Date</text>
+
+  <!-- Supplier Ships Items -->
+  <line x1="960" y1="673" x2="960" y2="730" class="line" />
+  <rect x="870" y="730" width="180" height="55" class="box" />
+  <text x="960" y="753" class="node-title">Dispatch Supplies</text>
+  <text x="960" y="770" class="node-sub">Status: DISPATCHED</text>
+
+  <!-- Delivery to Procurement -->
+  <line x1="870" y1="757" x2="780" y2="757" class="line" />
+  <rect x="600" y="730" width="180" height="55" class="box" />
+  <text x="690" y="753" class="node-title">Receive &amp; Inspect PO</text>
+  <text x="690" y="770" class="node-sub">Verify Batch &amp; Quality</text>
+
+  <!-- Restock into DB -->
+  <path d="M 690 785 L 690 840 L 460 840 L 460 545" class="line" />
+  <text x="520" y="832" class="node-sub">Increment inventory quantity</text>
+
+  <!-- ==================== 5. ADMINISTRATOR OVERSIGHT ==================== -->
+  <line x1="80" y1="890" x2="1020" y2="890" stroke="#000000" stroke-width="1.5" />
+  <text x="550" y="920" class="header-text">5. Hospital Administrator Governance &amp; Policy Control</text>
+
+  <!-- Policy Box -->
+  <rect x="120" y="950" width="240" height="65" class="box" />
+  <text x="240" y="977" class="node-title">System Settings</text>
+  <text x="240" y="996" class="node-sub">Global &amp; Per-Product Thresholds</text>
+
+  <!-- Arrow to DB -->
+  <path d="M 240 950 L 240 500 L 330 500" class="line" />
+  <text x="248" y="515" class="node-sub">Configures near_expiry_days</text>
+
+  <!-- Cross-Role Activity Monitor -->
+  <rect x="430" y="950" width="240" height="65" class="box" />
+  <text x="550" y="977" class="node-title">Activity Monitor</text>
+  <text x="550" y="996" class="node-sub">Dedicated 4-Role Audit Feed</text>
+
+  <!-- Audit connection -->
+  <line x1="550" y1="950" x2="550" y2="895" class="line" />
+
+  <!-- Reports & User Accounts -->
+  <rect x="740" y="950" width="240" height="65" class="box" />
+  <text x="860" y="977" class="node-title">Reports &amp; User Accounts</text>
+  <text x="860" y="996" class="node-sub">Stock Reports &amp; Role Access</text>
+
+  <!-- END NODE -->
+  <rect x="470" y="1070" width="160" height="42" class="start-end" />
+  <text x="550" y="1096" class="node-title">END: Closed Loop</text>
+  <line x1="550" y1="1015" x2="550" y2="1070" class="line" />
+
+  <!-- Footer Legend -->
+  <rect x="80" y="1150" width="940" height="70" fill="#ffffff" stroke="#000000" stroke-width="1" />
+  <text x="100" y="1175" class="node-title" style="text-anchor:start;">Standard Academic Legend:</text>
+  <text x="100" y="1198" class="node-sub" style="text-anchor:start;">[Rounded Pill] = Terminal State &nbsp;&nbsp;|&nbsp;&nbsp; [Rectangle] = Process Action &nbsp;&nbsp;|&nbsp;&nbsp; [Diamond] = Decision Branch &nbsp;&nbsp;|&nbsp;&nbsp; [Cylinder] = PostgreSQL Relational Database</text>
+</svg>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Hospital Supply Chain Management System</title>
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <style>
+    .alert-box {
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      font-size: var(--font-size-sm);
+      margin-bottom: 1.25rem;
+      display: none;
+      background-color: var(--color-danger-bg);
+      border: 1px solid var(--color-danger);
+      color: #7F1D1D;
+    }
+  </style>
+</head>
+<body class="login-body">
+  <div class="login-split">
+    <!-- Left Hero Branding -->
+    <div class="login-hero">
+      <div class="hero-branding">
+        <div class="hero-logo-box">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            <path d="M12 11v4"/>
+            <path d="M10 13h4"/>
+          </svg>
+        </div>
+        <span class="hero-title">HSCMS</span>
+      </div>
+
+      <div class="hero-body">
+        <h1 class="hero-headline">Hospital Supply Chain Management System</h1>
+        <p class="hero-tagline">
+          Real-time stock monitoring, department request routing, batch traceability, and automated expiry alerts designed for healthcare compliance.
+        </p>
+      </div>
+
+      <div class="hero-footer">
+        Hospital Supply Chain Management System
+      </div>
+    </div>
+
+    <!-- Right Login Form -->
+    <div class="login-form-container">
+      <div class="login-box">
+        <div class="login-header">
+          <h2 class="login-title">Sign In</h2>
+          <p class="login-desc">Enter your hospital credentials to access your portal</p>
+        </div>
+
+        <div id="login-error" class="alert-box" role="alert"></div>
+
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address <span class="required">*</span></label>
+            <input type="email" id="email" class="form-input" placeholder="e.g. staff@hscms.test" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password <span class="required">*</span></label>
+            <input type="password" id="password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-weight: 600;">
+            Sign In
+          </button>
+        </form>
+
+        <div style="margin-top: 1.75rem; border-top: 1px solid var(--color-border); padding-top: 1.25rem;">
+          <h4 style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 0.65rem;">
+            Hospital Credentials Reference
+          </h4>
+          <div style="overflow-x: auto; background: var(--color-bg, #f8fafc); border-radius: var(--radius, 8px); border: 1px solid var(--color-border, #e2e8f0);">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: left;">
+              <thead>
+                <tr style="border-bottom: 1px solid #e2e8f0; background: #f1f5f9; color: var(--color-text-muted);">
+                  <th style="padding: 0.5rem 0.65rem;">Role</th>
+                  <th style="padding: 0.5rem 0.65rem;">Email / Username</th>
+                  <th style="padding: 0.5rem 0.65rem;">Password</th>
+                </tr>
+              </thead>
+              <tbody id="cred-table-body">
+                <tr style="border-bottom: 1px solid #e2e8f0; cursor: pointer;" onclick="document.getElementById('email').value='admin@hscms.test'; document.getElementById('password').value='Admin@123';" title="Click to fill">
+                  <td style="padding: 0.45rem 0.65rem; font-weight: 600; color: #0f172a;">Hospital Administrator</td>
+                  <td style="padding: 0.45rem 0.65rem; font-family: monospace; color: var(--color-primary, #0d9488);">admin@hscms.test</td>
+                  <td style="padding: 0.45rem 0.65rem; font-family: monospace;">Admin@123</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0; cursor: pointer;" onclick="document.getElementById('email').value='inventory@hscms.test'; document.getElementById('password').value='Inventory@123';" title="Click to fill">
+                  <td style="padding: 0.45rem 0.65rem; font-weight: 600; color: #0f172a;">Inventory Manager</td>
+                  <td style="padding: 0.45rem 0.65rem; font-family: monospace; color: var(--color-primary, #0d9488);">inventory@hscms.test</td>
+                  <td style="padding: 0.45rem 0.65rem; font-family: monospace;">Inventory@123</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0; cursor: pointer;" onclick="document.getElementById('email').value='procurement@hscms.test'; document.getElementById('password').value='Procure@123';" title="Click to fill">
+                  <td style="padding: 0.45rem 0.65rem; font-weight: 600; color: #0f172a;">Procurement Officer</td>
+                  <td style="padding: 0.45rem 0.65rem; font-family: monospace; color: var(--color-primary, #0d9488);">procurement@hscms.test</td>
+                  <td style="padding: 0.45rem 0.65rem; font-family: monospace;">Procure@123</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0; cursor: pointer;" onclick="document.getElementById('email').value='staff@hscms.test'; document.getElementById('password').value='Staff@123';" title="Click to fill">
+                  <td style="padding: 0.45rem 0.65rem; font-weight: 600; color: #0f172a;">Department Staff</td>
+                  <td style="padding: 0.45rem 0.65rem; font-family: monospace; color: var(--color-primary, #0d9488);">staff@hscms.test</td>
+                  <td style="padding: 0.45rem 0.65rem; font-family: monospace;">Staff@123</td>
+                </tr>
+                <tr style="cursor: pointer;" onclick="document.getElementById('email').value='supplier@hscms.test'; document.getElementById('password').value='Supplier@123';" title="Click to fill">
+                  <td style="padding: 0.45rem 0.65rem; font-weight: 600; color: #0f172a;">Supplier / Vendor</td>
+                  <td style="padding: 0.45rem 0.65rem; font-family: monospace; color: var(--color-primary, #0d9488);">supplier@hscms.test</td>
+                  <td style="padding: 0.45rem 0.65rem; font-family: monospace;">Supplier@123</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size: 0.7rem; color: var(--color-text-muted); margin-top: 0.4rem; text-align: center;">
+            Tip: Click any row to automatically fill credentials.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+</body>
+</html>
