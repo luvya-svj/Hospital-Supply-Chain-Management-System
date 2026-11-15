@@ -56,7 +56,7 @@ router.put('/', async (req, res, next) => {
     });
 
     // Trigger alert re-evaluation since near_expiry_days may have changed
-    evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON SETTINGS CHANGE]', e));
+    await evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON SETTINGS CHANGE]', e));
 
     return res.json({
       message: 'System settings updated successfully.',
@@ -123,7 +123,7 @@ router.put('/product-thresholds/:id', async (req, res, next) => {
       return res.status(404).json({ error: 'Medical supply not found.' });
     }
 
-    evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON THRESHOLD CHANGE]', e));
+    await evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON THRESHOLD CHANGE]', e));
 
     return res.json({
       message: `Thresholds updated successfully for "${result.rows[0].name}".`,

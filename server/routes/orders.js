@@ -254,7 +254,7 @@ router.post('/', requireRole('Procurement Officer', 'Hospital Administrator'), a
     await client.query('COMMIT');
 
     // Trigger alert evaluation after PO creation
-    evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON ORDER CREATE]', e));
+    await evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON ORDER CREATE]', e));
 
     return res.status(201).json({
       message: 'Purchase order created successfully.',
@@ -325,7 +325,7 @@ router.patch('/:id/dispatch', async (req, res, next) => {
     `, [finalDispatchDate, finalExpectedDate, updatedNotes, orderId]);
 
     // Trigger alert evaluation after PO dispatch
-    evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON DISPATCH]', e));
+    await evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON DISPATCH]', e));
 
     const isFuture = finalDispatchDate > getTodayString();
     return res.json({
@@ -417,7 +417,7 @@ router.post('/:id/receive', async (req, res, next) => {
     await client.query('COMMIT');
 
     // Trigger alert re-evaluation (resolves DELAYED_DELIVERY and may trigger LOW_STOCK)
-    evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON RECEIVE]', e));
+    await evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON RECEIVE]', e));
 
     return res.json({
       message: `Purchase order #${orderId} marked as RECEIVED. Stock inventory updated successfully.`,
@@ -467,7 +467,7 @@ router.patch('/:id/cancel', requireRole('Procurement Officer', 'Hospital Adminis
     `, [orderId]);
 
     // Trigger alert re-evaluation (resolves DELAYED_DELIVERY for this order)
-    evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON CANCEL]', e));
+    await evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON CANCEL]', e));
 
     return res.json({
       message: `Purchase order #${orderId} has been cancelled.`,

@@ -211,7 +211,7 @@ router.post('/:id/decide', requireRole('Inventory Manager'), async (req, res, ne
       await client.query('COMMIT');
 
       // Trigger alert re-evaluation after stock deduction
-      evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON REQUEST APPROVE]', e));
+      await evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON REQUEST APPROVE]', e));
 
       return res.json({
         message: `Supply request for "${requestItem.supply_name}" approved successfully. Stock deducted by ${requestItem.quantity}.`,

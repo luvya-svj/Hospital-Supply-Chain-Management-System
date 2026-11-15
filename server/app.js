@@ -1,6 +1,8 @@
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const { pool } = require('./config/db');
 require('dotenv').config();
 
 const errorHandler = require('./middleware/errorHandler');
@@ -19,19 +21,27 @@ const activityRouter = require('./routes/activity');
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 // Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session configuration with httpOnly cookie
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Session configuration with PostgreSQL store
 app.use(session({
+  store: new pgSession({
+    pool: pool,
+    createTableIfMissing: true
+  }),
   name: 'hscms_sid',
   secret: process.env.SESSION_SECRET || 'hscms_super_secret_session_key_2026',
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: false, // Localhost development
+    secure: isProduction,
     sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }

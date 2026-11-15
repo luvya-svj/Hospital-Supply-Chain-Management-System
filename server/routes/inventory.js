@@ -277,7 +277,7 @@ router.post('/', requireRole('Inventory Manager'), async (req, res, next) => {
     await db.query('UPDATE inventory SET last_updated = CURRENT_TIMESTAMP WHERE inventory_id = $1', [inventoryId]);
 
     // Trigger alert evaluation after new stock is added
-    evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON ADD]', e));
+    await evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON ADD]', e));
 
     return res.status(201).json({
       message: 'Medical supply added successfully.',
@@ -363,7 +363,7 @@ router.put('/:id', requireRole('Inventory Manager'), async (req, res, next) => {
     ]);
 
     // Trigger alert re-evaluation after update
-    evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON UPDATE]', e));
+    await evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON UPDATE]', e));
 
     return res.json({
       message: 'Medical supply updated successfully.',
@@ -396,7 +396,7 @@ router.delete('/:id', requireRole('Inventory Manager'), async (req, res, next) =
     }
 
     // Trigger alert evaluation after supply deletion
-    evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON DELETE]', e));
+    await evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON DELETE]', e));
 
     return res.json({
       message: `Supply "${deleteRes.rows[0].name}" deleted successfully.`

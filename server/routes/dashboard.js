@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../config/db');
 const { authenticate } = require('../middleware/auth');
 const { isExpired, isNearExpiry, isLowStock } = require('../utils/stockUtils');
+const { evaluateAlertsThrottled } = require('../services/alertEngine');
 
 const router = express.Router();
 
@@ -10,6 +11,7 @@ router.use(authenticate);
 // GET /api/dashboard/stats
 router.get('/stats', async (req, res, next) => {
   try {
+    await evaluateAlertsThrottled();
     const user = req.session.user;
     const role = user.role;
 

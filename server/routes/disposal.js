@@ -149,7 +149,7 @@ router.post('/', requireRole('Inventory Manager'), async (req, res, next) => {
     await client.query('COMMIT');
 
     // Trigger alert engine evaluation to auto-resolve or update alerts
-    evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON DISPOSAL]', e));
+    await evaluateAlerts().catch(e => console.error('[ALERT EVAL ERROR ON DISPOSAL]', e));
 
     return res.status(201).json({
       message: `Successfully disposed ${qtyToDispose} ${supply.unit} of "${supply.name}".`,

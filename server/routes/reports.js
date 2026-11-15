@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../config/db');
 const { authenticate, requireRole } = require('../middleware/auth');
 const { isExpired, isNearExpiry, isLowStock, computeStockStatus } = require('../utils/stockUtils');
+const { evaluateAlertsThrottled } = require('../services/alertEngine');
 
 const router = express.Router();
 
@@ -11,6 +12,7 @@ router.use(authenticate, requireRole('Hospital Administrator'));
 // GET /api/reports/inventory - Current stock, status, expiry, with category & status filters + totals
 router.get('/inventory', async (req, res, next) => {
   try {
+    await evaluateAlertsThrottled();
     const { category, status } = req.query;
 
     // Get near_expiry_days setting
@@ -101,6 +103,7 @@ router.get('/inventory', async (req, res, next) => {
 // GET /api/reports/procurement - Orders by supplier and status within date range + totals
 router.get('/procurement', async (req, res, next) => {
   try {
+    await evaluateAlertsThrottled();
     const { supplier_id, status, start_date, end_date } = req.query;
 
     let query = `

@@ -51,7 +51,9 @@ async function seed() {
       ('Sahyadri Pharma Distributors', '+91-20-5550-0199', 'orders@sahyadripharma.test', 'Plot 42, MIDC Bhosari, Pune, Maharashtra 411026', true),
       ('Bharat MediSupply Pvt. Ltd.', '+91-22-5550-0245', 'sales@bharatmedisupply.test', 'Unit 12, Andheri Industrial Estate, Andheri West, Mumbai, Maharashtra 400053', true),
       ('Konkan Surgicals and Equipment', '+91-22-5550-0371', 'info@konkansurgicals.test', '88 Wagle Industrial Estate, Thane West, Maharashtra 400604', true),
-      ('Lifeline Diagnostics Traders', '+91-22-5550-0482', 'support@lifelinediagnostics.test', 'Sector 19, Vashi, Navi Mumbai, Maharashtra 400703', true)
+      ('Lifeline Diagnostics Traders', '+91-22-5550-0482', 'support@lifelinediagnostics.test', 'Sector 19, Vashi, Navi Mumbai, Maharashtra 400703', true),
+      ('Deccan Biomedical Supplies', '+91-253-5550-0593', 'contact@deccanbio.test', 'Plot 15, Ambad MIDC, Nashik, Maharashtra 422010', true),
+      ('Western Ghats Healthcare Traders', '+91-20-5550-0618', 'sales@westernghatshc.test', 'Gat No. 108, Hinjewadi Phase 2, Pune, Maharashtra 411057', true)
       RETURNING supplier_id, name
     `);
     const suppliers = supRes.rows;
@@ -77,6 +79,7 @@ async function seed() {
 
     const staffUser = userRes.rows.find(u => u.role === 'Hospital Department Staff');
     const procureUser = userRes.rows.find(u => u.role === 'Procurement Officer');
+    const invUser = userRes.rows.find(u => u.role === 'Inventory Manager');
 
     // 5. Medical Supplies (~35 items with required categories, units, and edge cases)
     console.log('Seeding medical supplies...');
@@ -130,7 +133,45 @@ async function seed() {
 
       // EDGE CASES: At least 2 Expired Items (expired before today, status EXPIRED)
       { name: 'Aspirin 75mg Gastro-Resistant', category: 'Medicines', batch: 'ASP-2025-X9', qty: 60, unit: 'Box of 100', min: 20, expDays: -45, supIdx: 0, status: 'EXPIRED' },
-      { name: 'Viral Transport Medium (VTM) Swabs', category: 'Diagnostics', batch: 'VTM-2025-Z2', qty: 85, unit: 'Tube', min: 25, expDays: -20, supIdx: 3, status: 'EXPIRED' }
+      { name: 'Viral Transport Medium (VTM) Swabs', category: 'Diagnostics', batch: 'VTM-2025-Z2', qty: 85, unit: 'Tube', min: 25, expDays: -20, supIdx: 3, status: 'EXPIRED' },
+
+      // Additional Realistic Supplies (Indian hospital context)
+      // Medicines
+      { name: 'Insulin Regular Human 40IU/ml', category: 'Medicines', batch: 'INS-2026-H1', qty: 120, unit: 'Vial', min: 25, expDays: 300, supIdx: 0, status: 'AVAILABLE' },
+      { name: 'Salbutamol 100mcg Inhaler', category: 'Medicines', batch: 'SAL-2026-S1', qty: 80, unit: 'Inhaler', min: 20, expDays: 450, supIdx: 0, status: 'AVAILABLE' },
+      { name: 'Diclofenac 50mg Tablets', category: 'Medicines', batch: 'DIC-2026-D1', qty: 250, unit: 'Box of 100', min: 30, expDays: 365, supIdx: 0, status: 'AVAILABLE' },
+      { name: 'Furosemide 20mg Injection', category: 'Medicines', batch: 'FUR-2026-F1', qty: 150, unit: 'Ampoule', min: 25, expDays: 400, supIdx: 0, status: 'AVAILABLE' },
+      { name: 'Atropine 0.6mg Injection', category: 'Medicines', batch: 'ATR-2026-A1', qty: 100, unit: 'Ampoule', min: 20, expDays: 365, supIdx: 0, status: 'AVAILABLE' },
+      { name: 'Hydrocortisone 100mg Injection', category: 'Medicines', batch: 'HYD-2026-H1', qty: 90, unit: 'Vial', min: 20, expDays: 420, supIdx: 0, status: 'AVAILABLE' },
+      { name: 'Dexamethasone 4mg Injection', category: 'Medicines', batch: 'DEX-2026-D4', qty: 18, unit: 'Vial', min: 25, expDays: 300, supIdx: 0, status: 'AVAILABLE' },
+      { name: 'Tetanus Toxoid Vaccine', category: 'Medicines', batch: 'TTX-2026-T1', qty: 45, unit: 'Ampoule', min: 15, expDays: 26, supIdx: 0, status: 'AVAILABLE' },
+      { name: 'Heparin 5000IU/ml Injection', category: 'Medicines', batch: 'HEP-2026-H5', qty: 35, unit: 'Vial', min: 15, expDays: 18, supIdx: 0, status: 'AVAILABLE' },
+      { name: 'Metronidazole 400mg Tablets', category: 'Medicines', batch: 'MET-2025-M4', qty: 0, unit: 'Box of 100', min: 30, expDays: -60, supIdx: 0, status: 'DISPOSED' },
+
+      // Surgical
+      { name: 'Surgical Blades #15', category: 'Surgical', batch: 'SBL-2026-15', qty: 150, unit: 'Box of 100', min: 25, expDays: 700, supIdx: 2, status: 'AVAILABLE' },
+      { name: 'Foley Catheter 16Fr', category: 'Surgical', batch: 'FOL-2026-16', qty: 110, unit: 'Piece', min: 20, expDays: 600, supIdx: 2, status: 'AVAILABLE' },
+      { name: 'Crepe Bandage 10cm', category: 'Surgical', batch: 'CRB-2026-10', qty: 140, unit: 'Roll', min: 30, expDays: 730, supIdx: 2, status: 'AVAILABLE' },
+      { name: 'Plaster of Paris Bandage 15cm', category: 'Surgical', batch: 'POP-2026-15', qty: 9, unit: 'Roll', min: 25, expDays: 500, supIdx: 2, status: 'AVAILABLE' },
+      { name: 'Vicryl Absorbable Suture 2-0', category: 'Surgical', batch: 'VIC-2026-20', qty: 80, unit: 'Box of 12', min: 20, expDays: 650, supIdx: 2, status: 'AVAILABLE' },
+
+      // PPE
+      { name: 'Surgical Face Masks 3-ply', category: 'PPE', batch: 'SFM-2026-3P', qty: 600, unit: 'Box of 50', min: 100, expDays: 730, supIdx: 1, status: 'AVAILABLE' },
+      { name: 'Disposable Aprons', category: 'PPE', batch: 'APR-2026-D1', qty: 250, unit: 'Pack of 100', min: 40, expDays: 800, supIdx: 1, status: 'AVAILABLE' },
+      { name: 'Disposable Shoe Covers', category: 'PPE', batch: 'SHC-2026-SC', qty: 14, unit: 'Pack of 50', min: 40, expDays: 600, supIdx: 1, status: 'AVAILABLE' },
+      { name: 'Nitrile Examination Gloves (Large)', category: 'PPE', batch: 'GLV-2026-NL', qty: 300, unit: 'Box of 100', min: 50, expDays: 500, supIdx: 1, status: 'AVAILABLE' },
+
+      // Diagnostics
+      { name: 'Malaria Rapid Antigen Test Kit', category: 'Diagnostics', batch: 'MAL-2026-RT', qty: 120, unit: 'Kit of 25', min: 25, expDays: 365, supIdx: 3, status: 'AVAILABLE' },
+      { name: 'Hepatitis B HBsAg Rapid Test Kit', category: 'Diagnostics', batch: 'HPB-2026-HB', qty: 30, unit: 'Kit of 25', min: 15, expDays: 12, supIdx: 3, status: 'AVAILABLE' },
+      { name: 'COVID-19 Rapid Antigen Test Kit', category: 'Diagnostics', batch: 'COV-2025-RT', qty: 50, unit: 'Kit of 25', min: 20, expDays: -10, supIdx: 3, status: 'EXPIRED' },
+
+      // Consumables (using Deccan Biomedical [supIdx 4] and Western Ghats [supIdx 5])
+      { name: 'Nebulizer Masks (Adult)', category: 'Consumables', batch: 'NEB-2026-AD', qty: 130, unit: 'Piece', min: 25, expDays: 700, supIdx: 4, status: 'AVAILABLE' },
+      { name: 'Oxygen Masks with Tubing', category: 'Consumables', batch: 'OXY-2026-TB', qty: 140, unit: 'Piece', min: 30, expDays: 650, supIdx: 5, status: 'AVAILABLE' },
+      { name: 'Urine Collection Bags 2000ml', category: 'Consumables', batch: 'URB-2026-2K', qty: 11, unit: 'Piece', min: 30, expDays: 500, supIdx: 4, status: 'AVAILABLE' },
+      { name: 'Medical Adhesive Tape 2.5cm', category: 'Consumables', batch: 'TAP-2026-25', qty: 200, unit: 'Roll', min: 35, expDays: 600, supIdx: 5, status: 'AVAILABLE' },
+      { name: 'IV Infusion Sets', category: 'Consumables', batch: 'INF-2026-IV', qty: 350, unit: 'Box of 25', min: 50, expDays: 700, supIdx: 4, status: 'AVAILABLE' }
     ];
 
     const insertedSupplies = [];
@@ -165,7 +206,70 @@ async function seed() {
       `, [syringes.supply_id, staffUser.user_id]);
     }
 
-    // 7. Increment 2 Purchase Orders (ORDERED, DISPATCHED, RECEIVED, DELAYED)
+    // 13 Additional supply requests across various departments
+    console.log('Seeding additional supply requests...');
+    const moreRequests = [
+      // 4 PENDING
+      { name: 'Insulin Regular Human', dept: 'ICU', qty: 15, status: 'PENDING', reqDaysAgo: 1 },
+      { name: 'Surgical Blades #15', dept: 'Operation Theatre', qty: 20, status: 'PENDING', reqDaysAgo: 2 },
+      { name: 'Salbutamol 100mcg', dept: 'Pediatrics', qty: 10, status: 'PENDING', reqDaysAgo: 3 },
+      { name: 'Pantoprazole 40mg', dept: 'Medicine Ward', qty: 25, status: 'PENDING', reqDaysAgo: 4 },
+      // 6 APPROVED
+      { name: 'Normal Saline 0.9%', dept: 'Emergency (Casualty)', qty: 30, status: 'APPROVED', reqDaysAgo: 14, decHoursLater: 3 },
+      { name: 'Ondansetron 4mg', dept: 'ICU', qty: 20, status: 'APPROVED', reqDaysAgo: 12, decHoursLater: 2 },
+      { name: 'Vicryl Absorbable', dept: 'Operation Theatre', qty: 15, status: 'APPROVED', reqDaysAgo: 10, decHoursLater: 4 },
+      { name: 'Crepe Bandage 10cm', dept: 'Orthopedics', qty: 25, status: 'APPROVED', reqDaysAgo: 8, decHoursLater: 5 },
+      { name: 'Malaria Rapid Antigen', dept: 'Laboratory', qty: 20, status: 'APPROVED', reqDaysAgo: 6, decHoursLater: 2 },
+      { name: 'Oral Rehydration Salts', dept: 'Pediatrics', qty: 40, status: 'APPROVED', reqDaysAgo: 5, decHoursLater: 1 },
+      // 3 REJECTED
+      { name: 'Adrenaline (Epinephrine)', dept: 'ICU', qty: 50, status: 'REJECTED', reqDaysAgo: 11, decHoursLater: 3 },
+      { name: 'Aspirin 75mg', dept: 'Medicine Ward', qty: 20, status: 'REJECTED', reqDaysAgo: 7, decHoursLater: 2 },
+      { name: 'Endotracheal Tube', dept: 'Emergency (Casualty)', qty: 30, status: 'REJECTED', reqDaysAgo: 3, decHoursLater: 4 }
+    ];
+
+    for (const r of moreRequests) {
+      const sup = insertedSupplies.find(s => s.name.startsWith(r.name));
+      if (sup && staffUser) {
+        if (r.status === 'PENDING') {
+          await client.query(`
+            INSERT INTO supply_request (supply_id, requested_by, department, quantity, status, request_date)
+            VALUES ($1, $2, $3, $4, 'PENDING', CURRENT_TIMESTAMP - ($5 || ' days')::interval)
+          `, [sup.supply_id, staffUser.user_id, r.dept, r.qty, r.reqDaysAgo]);
+        } else {
+          await client.query(`
+            INSERT INTO supply_request (supply_id, requested_by, department, quantity, status, request_date, decided_by, decided_at)
+            VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP - ($6 || ' days')::interval, $7, CURRENT_TIMESTAMP - ($6 || ' days')::interval + ($8 || ' hours')::interval)
+          `, [sup.supply_id, staffUser.user_id, r.dept, r.qty, r.status, r.reqDaysAgo, invUser.user_id, r.decHoursLater]);
+        }
+      }
+    }
+
+    // 7. Disposal Records (recorded_by the Inventory Manager)
+    console.log('Seeding disposal records...');
+    const metro = insertedSupplies.find(s => s.name.startsWith('Metronidazole 400mg'));
+    const insSupply = insertedSupplies.find(s => s.name.startsWith('Insulin Regular Human'));
+    const asp = insertedSupplies.find(s => s.name.startsWith('Aspirin 75mg'));
+    const vtm = insertedSupplies.find(s => s.name.startsWith('Viral Transport Medium'));
+    const gwnSupply = insertedSupplies.find(s => s.name.startsWith('Disposable Surgical Gowns'));
+
+    const disposalsData = [
+      { supply: metro, qty: 40, daysAgo: -45, reason: 'Metronidazole 40: Fully disposed batch expired 60 days ago.' },
+      { supply: insSupply, qty: 6, daysAgo: -15, reason: 'Insulin 6: Cold chain storage breach during ward transfer.' },
+      { supply: asp, qty: 25, daysAgo: -30, reason: 'Aspirin 25: Damaged packaging and moisture ingress during storage inspection.' },
+      { supply: vtm, qty: 15, daysAgo: -10, reason: 'VTM 15: Expired viral transport medium swabs safely incinerated.' },
+      { supply: gwnSupply, qty: 10, daysAgo: -20, reason: 'Surgical Gowns 10: Torn sterile outer packaging during pallet transit.' }
+    ];
+
+    for (const d of disposalsData) {
+      if (d.supply && invUser) {
+        await client.query(`
+          INSERT INTO disposal_record (supply_id, quantity, disposal_date, reason, recorded_by)
+          VALUES ($1, $2, $3, $4, $5)
+        `, [d.supply.supply_id, d.qty, addDays(d.daysAgo), d.reason, invUser.user_id]);
+      }
+    }
+
+    // 8. Increment 2 Purchase Orders (ORDERED, DISPATCHED, RECEIVED, DELAYED)
     console.log('Seeding purchase orders...');
     // Ensure dispatch_date column exists
     await client.query('ALTER TABLE purchase_order ADD COLUMN IF NOT EXISTS dispatch_date DATE');
@@ -173,6 +277,10 @@ async function seed() {
     if (procureUser) {
       const sahyadriSupplier = suppliers[0];
       const bharatMediSupplier = suppliers[1];
+      const konkanSupplier = suppliers[2];
+      const lifelineSupplier = suppliers[3];
+      const deccanSupplier = suppliers[4];
+      const westernSupplier = suppliers[5];
 
       const pcm = insertedSupplies.find(s => s.name.startsWith('Paracetamol'));
       const amx = insertedSupplies.find(s => s.name.startsWith('Amoxicillin'));
@@ -220,6 +328,163 @@ async function seed() {
       `, [sahyadriSupplier.supplier_id, procureUser.user_id, addDays(-10), addDays(-3)]);
       const po4Id = po4Res.rows[0].order_id;
       if (adr) await client.query('INSERT INTO purchase_order_item (order_id, supply_id, quantity) VALUES ($1, $2, 50)', [po4Id, adr.supply_id]);
+
+      // 16 Additional Purchase Orders (Total: 20)
+      const panto = insertedSupplies.find(s => s.name.startsWith('Pantoprazole'));
+      const met = insertedSupplies.find(s => s.name.startsWith('Metformin'));
+      const sal = insertedSupplies.find(s => s.name.startsWith('Salbutamol'));
+      const dic = insertedSupplies.find(s => s.name.startsWith('Diclofenac'));
+      const atr = insertedSupplies.find(s => s.name.startsWith('Atropine'));
+      const fur = insertedSupplies.find(s => s.name.startsWith('Furosemide'));
+      const hyd = insertedSupplies.find(s => s.name.startsWith('Hydrocortisone'));
+      const n95 = insertedSupplies.find(s => s.name.startsWith('N95 Respirator'));
+      const apr = insertedSupplies.find(s => s.name.startsWith('Disposable Aprons'));
+      const scp = insertedSupplies.find(s => s.name.startsWith('Surgical Scalpel'));
+      const sut = insertedSupplies.find(s => s.name.startsWith('Silk Sutures'));
+      const sbl = insertedSupplies.find(s => s.name.startsWith('Surgical Blades'));
+      const vic = insertedSupplies.find(s => s.name.startsWith('Vicryl Absorbable'));
+      const glu = insertedSupplies.find(s => s.name.startsWith('Blood Glucose'));
+      const den = insertedSupplies.find(s => s.name.startsWith('Rapid Dengue'));
+      const urn = insertedSupplies.find(s => s.name.startsWith('Urine Test'));
+      const mal = insertedSupplies.find(s => s.name.startsWith('Malaria Rapid'));
+      const neb = insertedSupplies.find(s => s.name.startsWith('Nebulizer Masks'));
+      const urb = insertedSupplies.find(s => s.name.startsWith('Urine Collection'));
+      const inf = insertedSupplies.find(s => s.name.startsWith('IV Infusion'));
+      const oxy = insertedSupplies.find(s => s.name.startsWith('Oxygen Masks'));
+      const tap = insertedSupplies.find(s => s.name.startsWith('Medical Adhesive'));
+
+      const additionalOrders = [
+        // Sahyadri (suppliers[0]): 6 orders (2 RECEIVED, 1 DISPATCHED, 1 ORDERED, 1 CANCELLED, 1 DELAYED)
+        {
+          sup: sahyadriSupplier, status: 'RECEIVED',
+          oDays: -42, expDays: -32, dispDays: -35, actDays: -31,
+          notes: 'Bulk gastro and diabetes medicines received and stock verified.',
+          items: [{ sup: panto, qty: 80 }, { sup: met, qty: 100 }]
+        },
+        {
+          sup: sahyadriSupplier, status: 'RECEIVED',
+          oDays: -25, expDays: -15, dispDays: -18, actDays: -14,
+          notes: 'Routine fever and analgesic tablets restock received.',
+          items: [{ sup: pcm, qty: 120 }]
+        },
+        {
+          sup: sahyadriSupplier, status: 'DISPATCHED',
+          oDays: -5, expDays: 3, dispDays: -1, actDays: null,
+          notes: 'Dispatched via SafeLogistics, tracking #SL-4412.',
+          items: [{ sup: sal, qty: 40 }, { sup: dic, qty: 60 }]
+        },
+        {
+          sup: sahyadriSupplier, status: 'ORDERED',
+          oDays: -2, expDays: 6, dispDays: null, actDays: null,
+          notes: 'Emergency critical care injection supplies ordered.',
+          items: [{ sup: atr, qty: 50 }, { sup: fur, qty: 60 }]
+        },
+        {
+          sup: sahyadriSupplier, status: 'CANCELLED',
+          oDays: -20, expDays: -10, dispDays: null, actDays: null,
+          notes: 'Order cancelled due to duplicate departmental requisition.',
+          items: [{ sup: hyd, qty: 30 }]
+        },
+        {
+          sup: sahyadriSupplier, status: 'ORDERED', // DELAYED
+          oDays: -15, expDays: -5, dispDays: null, actDays: null,
+          notes: 'Delayed due to factory packaging line maintenance at Pune facility.',
+          items: [{ sup: insSupply, qty: 40 }, { sup: ctx, qty: 50 }]
+        },
+
+        // Bharat MediSupply (suppliers[1]): 2 orders (1 RECEIVED, 1 DISPATCHED)
+        {
+          sup: bharatMediSupplier, status: 'RECEIVED',
+          oDays: -38, expDays: -28, dispDays: -30, actDays: -27,
+          notes: 'Sterile PPE consumables received in good condition.',
+          items: [{ sup: n95, qty: 100 }, { sup: gwnSupply, qty: 50 }]
+        },
+        {
+          sup: bharatMediSupplier, status: 'DISPATCHED',
+          oDays: -4, expDays: 4, dispDays: -1, actDays: null,
+          notes: 'Consignment in transit with BlueDart MedExpress.',
+          items: [{ sup: gauze, qty: 120 }, { sup: apr, qty: 60 }]
+        },
+
+        // Konkan Surgicals (suppliers[2]): 2 orders (1 DELAYED, 1 ORDERED)
+        {
+          sup: konkanSupplier, status: 'ORDERED', // DELAYED
+          oDays: -18, expDays: -6, dispDays: null, actDays: null,
+          notes: 'Supplier back-ordered surgical instruments; expedited delivery requested.',
+          items: [{ sup: scp, qty: 40 }, { sup: sut, qty: 30 }]
+        },
+        {
+          sup: konkanSupplier, status: 'ORDERED',
+          oDays: -3, expDays: 7, dispDays: null, actDays: null,
+          notes: 'Monthly surgical blades and sutures replenishment.',
+          items: [{ sup: sbl, qty: 50 }, { sup: vic, qty: 40 }]
+        },
+
+        // Lifeline Diagnostics (suppliers[3]): 2 orders (1 RECEIVED, 1 DISPATCHED)
+        {
+          sup: lifelineSupplier, status: 'RECEIVED',
+          oDays: -30, expDays: -20, dispDays: -22, actDays: -19,
+          notes: 'Diagnostic reagents batch verified by laboratory technologist.',
+          items: [{ sup: glu, qty: 60 }, { sup: den, qty: 30 }]
+        },
+        {
+          sup: lifelineSupplier, status: 'DISPATCHED',
+          oDays: -6, expDays: 2, dispDays: -2, actDays: null,
+          notes: 'Dispatched in temperature-controlled vehicle.',
+          items: [{ sup: urn, qty: 50 }, { sup: mal, qty: 40 }]
+        },
+
+        // Deccan Biomedical Supplies (suppliers[4]): 2 orders (1 DELAYED, 1 RECEIVED)
+        {
+          sup: deccanSupplier, status: 'ORDERED', // DELAYED
+          oDays: -14, expDays: -4, dispDays: null, actDays: null,
+          notes: 'Supply delayed due to raw material shipment hold at customs.',
+          items: [{ sup: neb, qty: 50 }, { sup: urb, qty: 60 }]
+        },
+        {
+          sup: deccanSupplier, status: 'RECEIVED',
+          oDays: -22, expDays: -12, dispDays: -15, actDays: -11,
+          notes: 'Infusion sets delivered to central store loading dock.',
+          items: [{ sup: inf, qty: 100 }]
+        },
+
+        // Western Ghats Healthcare Traders (suppliers[5]): 2 orders (1 ORDERED, 1 RECEIVED)
+        {
+          sup: westernSupplier, status: 'ORDERED',
+          oDays: -1, expDays: 8, dispDays: null, actDays: null,
+          notes: 'Restock order for consumable adhesive tapes and tubing.',
+          items: [{ sup: tap, qty: 80 }, { sup: oxy, qty: 50 }]
+        },
+        {
+          sup: westernSupplier, status: 'RECEIVED',
+          oDays: -35, expDays: -25, dispDays: -27, actDays: -24,
+          notes: 'Initial consignment received and catalogued.',
+          items: [{ sup: oxy, qty: 60 }]
+        }
+      ];
+
+      for (const ord of additionalOrders) {
+        const oDate = addDays(ord.oDays);
+        const expDate = addDays(ord.expDays);
+        const dispDate = ord.dispDays !== null ? addDays(ord.dispDays) : null;
+        const actDate = ord.actDays !== null ? addDays(ord.actDays) : null;
+
+        const poRes = await client.query(`
+          INSERT INTO purchase_order (supplier_id, created_by, order_date, status, expected_date, dispatch_date, actual_date, notes)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+          RETURNING order_id
+        `, [ord.sup.supplier_id, procureUser.user_id, oDate, ord.status, expDate, dispDate, actDate, ord.notes]);
+
+        const orderId = poRes.rows[0].order_id;
+        for (const itm of ord.items) {
+          if (itm.sup) {
+            await client.query(`
+              INSERT INTO purchase_order_item (order_id, supply_id, quantity)
+              VALUES ($1, $2, $3)
+            `, [orderId, itm.sup.supply_id, itm.qty]);
+          }
+        }
+      }
     }
 
     await client.query('COMMIT');
@@ -227,11 +492,12 @@ async function seed() {
     console.log(`Summary:
   - 1 Inventory Store
   - 2 System Settings
-  - 4 Suppliers
+  - ${suppliers.length} Suppliers
   - 5 Role-based Demo Users
   - ${insertedSupplies.length} Medical Supplies with Low-Stock, Near-Expiry & Expired edge cases
-  - 2 Pending Department Supply Requests
-  - 4 Purchase Orders (1 ORDERED, 1 DISPATCHED, 1 RECEIVED, 1 DELAYED)
+  - 15 Department Supply Requests (6 PENDING, 6 APPROVED, 3 REJECTED)
+  - 5 Disposal Records
+  - 20 Purchase Orders (8 ORDERED [4 DELAYED], 4 DISPATCHED, 7 RECEIVED, 1 CANCELLED)
     `);
   } catch (err) {
     await client.query('ROLLBACK');

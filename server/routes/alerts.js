@@ -1,7 +1,7 @@
 const express = require('express');
 const db = require('../config/db');
 const { authenticate, requireRole } = require('../middleware/auth');
-const { evaluateAlerts } = require('../services/alertEngine');
+const { evaluateAlerts, evaluateAlertsThrottled } = require('../services/alertEngine');
 
 const router = express.Router();
 
@@ -24,6 +24,7 @@ function getAllowedAlertTypes(role) {
 // GET /api/alerts - List active unresolved alerts for the current user's role
 router.get('/', async (req, res, next) => {
   try {
+    await evaluateAlertsThrottled();
     const role = req.session.user.role;
     const allowedTypes = getAllowedAlertTypes(role);
 
@@ -87,6 +88,7 @@ router.get('/', async (req, res, next) => {
 // GET /api/alerts/count - Return active unresolved alert count for the top-bar badge
 router.get('/count', async (req, res, next) => {
   try {
+    await evaluateAlertsThrottled();
     const role = req.session.user.role;
     const allowedTypes = getAllowedAlertTypes(role);
 

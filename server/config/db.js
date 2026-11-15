@@ -46,6 +46,16 @@ function parseDbConfig(connStr) {
 
 const rawUrl = getDatabaseUrl();
 const poolConfig = parseDbConfig(rawUrl);
+
+// Keep pool small for serverless and local (max: 5)
+poolConfig.max = 5;
+
+// Use SSL when NODE_ENV is production or DATABASE_URL contains sslmode=require
+const useSsl = process.env.NODE_ENV === 'production' || (rawUrl && rawUrl.includes('sslmode=require'));
+if (useSsl) {
+  poolConfig.ssl = { rejectUnauthorized: false };
+}
+
 const pool = new Pool(poolConfig);
 
 pool.on('error', (err) => {

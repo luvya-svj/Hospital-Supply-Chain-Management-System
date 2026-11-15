@@ -1,6 +1,7 @@
 const db = require('../config/db');
 
 let alertInterval = null;
+let evaluationQueue = Promise.resolve();
 
 /**
  * Calculates days remaining or overdue between two dates
@@ -21,7 +22,7 @@ function getDaysDiff(targetDate) {
  * 3. EXPIRED: expiry_date < CURRENT_DATE and status != DISPOSED
  * 4. DELAYED_DELIVERY: PO expected_date < CURRENT_DATE and status NOT IN (RECEIVED, CANCELLED)
  */
-async function evaluateAlerts() {
+async function runAlertEvaluation() {
   try {
     // 1. Get near_expiry_days setting
     const settingRes = await db.query("SELECT value FROM system_setting WHERE key = 'near_expiry_days'");
@@ -204,6 +205,32 @@ async function evaluateAlerts() {
 }
 
 /**
+ * Queues evaluateAlerts calls sequentially using a promise chain
+ * to avoid duplicate alert race conditions. One failure does not block the queue.
+ */
+function evaluateAlerts() {
+  const next = evaluationQueue.then(
+    () => runAlertEvaluation(),
+    () => runAlertEvaluation()
+  );
+  evaluationQueue = next.catch(() => {});
+  return next;
+}
+
+let lastEvaluationTime = 0;
+
+/**
+ * Awaits evaluateAlerts(), throttled to at most once per 30 seconds per instance.
+ */
+async function evaluateAlertsThrottled(minIntervalMs = 30000) {
+  const now = Date.now();
+  if (now - lastEvaluationTime >= minIntervalMs) {
+    lastEvaluationTime = now;
+    await evaluateAlerts();
+  }
+}
+
+/**
  * Starts hourly periodic background check
  */
 function startAlertScheduler() {
@@ -225,7 +252,9 @@ function stopAlertScheduler() {
 }
 
 module.exports = {
+  runAlertEvaluation,
   evaluateAlerts,
+  evaluateAlertsThrottled,
   startAlertScheduler,
   stopAlertScheduler
 };
